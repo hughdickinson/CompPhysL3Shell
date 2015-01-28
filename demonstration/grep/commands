@@ -1,0 +1,75 @@
+# At the end of the find tutorial, we saved a list of paths through
+# the labyrinth that end at rooms to the file "roomsInMaze". Using
+# the grep command we can search that file for all paths that pass
+# through a nexus.
+
+# NORMAL OPERATION: grep "SEARCH PATTERN" FILE
+grep "nexus" roomsInMaze
+
+# So far we've done no better than using find with wholename and a
+# wildcard pattern. However, by using the -v flag we can instruct grep
+# to perform an INVERSE MATCH. So to print all paths that DO NOT
+# pass through a nexus we use
+
+# INVERSE MATCH: grep -v "SEARCH PATTERN" FILE
+
+grep -v "nexus" roomsInMaze
+
+# Okay, let's have a look at what's in one of these safe rooms
+
+ls ../labyrinth/turn-right/turn-left/turn-left/turn-right/room
+
+# Ooh! A treasure chest! I wonder what's in it
+
+cat ../labyrinth/turn-right/turn-left/turn-left/turn-right/room/treasure-chest
+
+# Empty?! Grrrr! What we need is a list of rooms at the end of
+# safe paths that contain treasure chests that aren't empty! We'll
+# do this two stages. The first uses the familiar PIPE operator "|"
+# to send the output of the find command directly to grep
+
+# FIND ALL TREASURE CHESTS | ELIMINATE NEXUSES > SAVE TO FILE
+find ../labyrinth -name "treasure-chest" | grep -v "nexus" > safeTreasureChests
+
+# Now we can use the xargs command to invoke grep and search each
+# of the safe treasure chests to find those that aren't empty. We'll
+# use the -H flag to print the paths as well as the matching strings.
+
+cat safeTreasureChests | xargs -i{} grep -H -v "empty" {}
+
+# NOTE: We didn't really need to save the intermediate file. We
+# could have simply piped the output of the first command to the
+# second command i.e. 
+
+find ../labyrinth -name "treasure-chest" | grep -v "nexus" | xargs -i{} grep -H -v "empty" {}
+
+# NOTE: If we ONLY wanted the paths - NOT the chest contents - we could
+# have used the "cut" command, specifying the ':' character as a
+# delimiter e.g.
+
+find ../labyrinth -name "treasure-chest" | grep -v "nexus" | xargs -i{} grep -H -v "empty" {} | cut -d":" -f 1
+
+# All those treasures have made me avaricious! I wonder if
+# there's a way to what's lurking at all those scary nexuses.
+# Let's try using find to get the paths to all treasure chests in
+# the maze, then using grep with a regular expression that matches
+# an arbitrary-length string of arbirary characters (".*") followed
+# by the word "nexus". We use the -o flag so that grep will only
+# print the part of the path that matches.
+
+find ../labyrinth -name "treasure-chest" | grep -o ".*nexus" 
+
+# Okay, now let's use xargs tosee what's lurking at each of those
+# nexuses
+
+find ../labyrinth -name "treasure-chest" | grep -o ".*nexus" | xargs -i{} ls {}
+
+# Hmm, creature that's not very instructive. I wonder what types of
+# creatures live in the maze.
+
+find ../labyrinth -name "creature" | xargs -i{} cat {}
+
+# I think we can deal with a few rats! Let's try to find paths 
+# to filled treasure chests, that have nexuses with "tame" rats...
+
+Actually, that sounds like a good homework question! 

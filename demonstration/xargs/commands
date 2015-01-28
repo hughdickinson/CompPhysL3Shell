@@ -1,0 +1,16 @@
+# This command adds the prefix "Descartes: " to each line of
+# the file "cartesian". We specify "{}" as the substitution
+# string.
+
+cat cartesian | xargs -i{} echo "Descartes: {}"
+
+# Each line in "cartesian" is actually a file name. This command
+# prints the contents of each file. We specify "@" as the
+# substitution string.
+
+cat cartesian | xargs -i@ cat @
+
+# Finally, lets combine the first two examples using two
+# instances of the PIPE OPERATOR "|".
+
+cat cartesian | xargs -i@ cat @ | xargs -i{} echo "Descartes translated: {}"

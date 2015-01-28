@@ -1,0 +1,35 @@
+# The ../labyrinth directory contains a fiendish maze of 
+# directories populated with glittering treasures and dangerous
+# creatures. Let's use the find command to get a path through
+# the labyrinth to the treasures within. 
+
+# We know from ancient writings that all the treasures are
+# hidden in rooms deep within the winding corridors.
+
+find ../labyrinth -name "room"
+
+# Okay, so we've tracked down all the rooms where treasures
+# might be hidden. Unfortunately, several creatures also live
+# in the maze. They like to linger around nexuses (points 
+# where four paths converge). Let's work out where those 
+# nexuses are.
+
+find ../labyrinth -name "nexus"
+
+# We had better avoid any paths to rooms that include a nexus.
+# Let's identify those. How about using a wildcard expression
+
+find ../labyrinth -name "*nexus*room"
+
+# Hmm, that didn't work. That's because the nexuses and rooms
+# occur at different points in the path. We need 
+
+find ../labyrinth -wholename "*nexus*room"
+
+# By using wholename we have indeed identified all the paths
+# leading to a room that passes through a nexus. But what we 
+# really want to know is all of the safe paths to rooms -
+# those that don't pass through nexuses. 
+
+# It is possible to do that with find, but we'll use the grep 
+# instead.
