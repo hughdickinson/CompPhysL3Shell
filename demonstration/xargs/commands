@@ -10,7 +10,59 @@ cat cartesian | xargs -i{} echo "Descartes: {}"
 
 cat cartesian | xargs -i@ cat @
 
-# Finally, lets combine the first two examples using two
+# Let's combine the first two examples using two
 # instances of the PIPE OPERATOR "|".
 
 cat cartesian | xargs -i@ cat @ | xargs -i{} echo "Descartes translated: {}"
+
+# Here's a neat trick that's often useful when using
+# xargs. Often you'd like to execute MULTIPLE COMMANDS
+# using THE SAME SUBSTITUTION. You can do this by first
+# making xargs generate a list of the COMMANDS you want
+# to execute and the PIPE THAT LIST TO THE SHELL.
+
+# We'll illustrate what we're doing in a few stages: 
+#First, inspect the coloursAndMnemonic file
+
+cat coloursAndMnemonic
+
+# We'll try to filter out the colours, leaving only the
+# mnemonic. 
+# First make and appropriately named copy of coloursAndMnemonic
+
+cp coloursAndMnemonic mnemonic
+
+# Now let's generate that list of commands. We do this using
+# the "echo" command to print a series of shell command
+# invocations, separated by the statement termination token
+# ";" (That's right it's the same as the C++ one!).
+
+cat colours | xargs -i{} echo "grep -v \"{}\" mnemonic > temp; mv temp mnemonic"
+
+# NOTE: We needed to excape the NESTED quotation marks
+#       by prepending with the "\" character.
+
+# What does this command do? For each line in the colours
+# xargs PRINTS two shell commands separated by a ";" token.
+
+# The first commands searches the mnemonic file
+# and prints any lines that DO NOT MATCH the line from 
+# the colours file and saves them to a file called temp.
+
+# The second command replaces the current mnemonic
+# file using the temp file. So if the PRINTED command HAD 
+# actually been EXECUTED, then the mnemonic file would now 
+# have all lines matching the line from colours removed. 
+
+# In order to actually execute the printed commands we need
+# to PIPE THEM TO THE SHELL. We do this by appending "| sh"
+# to the end of our command i.e.
+
+cat colours | xargs -i{} echo "grep -v \"{}\" mnemonic > temp; mv temp mnemonic" | sh
+
+# Check this by inspecting the mnemonic file if you don't 
+# believe me!
+
+cat mnemonic
+
+# It's a neat trick that often comes in handy.

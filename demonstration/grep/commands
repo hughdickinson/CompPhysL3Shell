@@ -72,4 +72,5 @@ find ../labyrinth -name "creature" | xargs -i{} cat {}
 # I think we can deal with a few rats! Let's try to find paths 
 # to filled treasure chests, that have nexuses with "tame" rats...
 
-Actually, that sounds like a good homework question! 
+# Actually, that sounds like a good homework question! 
+
